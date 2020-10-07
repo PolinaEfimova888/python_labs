@@ -15,7 +15,6 @@ def upload_img(filename):
 img1 = upload_img('img1.txt')
 img2 = upload_img('img2.txt')
 
-
 def find(img):
     for y in range(img.shape[0]):
         for x in range(img.shape[1]):
