@@ -16,19 +16,19 @@ img1 = upload_img('img1.txt')
 img2 = upload_img('img2.txt')
 
 
-def find_first_point(img):
+def find(img):
     for y in range(img.shape[0]):
         for x in range(img.shape[1]):
             if img[y, x] == 1:
                 return y, x
 
-y1, x1 = find_first_point(img1)
-y2, x2 = find_first_point(img2)
+y1, x1 = find(img1)
+y2, x2 = find(img2)
 
-x=x2-x1
 y=y2-y1
+x=x2-x1
 
-print(f'смещение\nх = {x}\nу = {y}')
+print(f'Task 2\nсмещение\nх = {x}\nу = {y}')
 
 plt.figure()
 plt.subplot(121)
