@@ -27,7 +27,7 @@ y2, x2 = find(img2)
 y=y2-y1
 x=x2-x1
 
-print(f'смещение\nх = {x}\nу = {y}')
+print(f'смещение y, х : = {y}, {x}')
 
 plt.figure()
 plt.subplot(121)
