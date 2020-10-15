@@ -4,17 +4,17 @@ import matplotlib.pyplot as plt
 def getNominalResolution(image,realSize):
     lst=[]
     lst.append(np.where(image==1))
-    max=0
+    c=0
     for i in range(len(lst[0][0])):
         for j in range(len(lst[0][0])):
             if i!=j:
                 temp=int((lst[0][0][i]-lst[0][0][j])**2 + (lst[0][1][i]-lst[0][1][j])**2)**0.5
-                if temp>max: max=temp
+                if temp>c: c=temp
 
-    if max==0:
+    if c==0:
         return "The figure does not exist"
     else:            
-        return (realSize/max)
+        return (realSize/c)
 
 
 for i in range(1,7):
