@@ -1,32 +1,16 @@
-import numpy as np
-import matplotlib.pyplot as plt
+import re
+for item in range(1,7) :
+  f = open('figure'+str(item)+'.txt')
+  object_size = f.readline()
+  f.readline
+  all_units = []
+  max_size = 0
+  all_units_in_line = []
+  while(f.readline()):
+            all_units.append(f.readline())
+  for units in all_units:
+    temp=0
+    temp =[ temp+1for unit in units if unit=='1']
+    all_units_in_line.append(len(temp) if len(temp)>0 else 0)
 
-def getNominalResolution(image,realSize):
-    lst=[]
-    lst.append(np.where(image==1))
-    c=0
-    for i in range(len(lst[0][0])):
-        for j in range(len(lst[0][0])):
-            if i!=j:
-                temp=int((lst[0][0][i]-lst[0][0][j])**2 + (lst[0][1][i]-lst[0][1][j])**2)**0.5
-                if temp>c: c=temp
-
-    if c==0:
-        return "The figure does not exist"
-    else:            
-        return (realSize/c)
-
-
-for i in range(1,7):
-    name = 'figure'
-    txt = '.txt'
-
-    file = open(name + str(i) + txt)
-    realSize=float(file.readline())
-    file.close()
-    img = np.genfromtxt(fname=name + str(i) + txt,skip_header=1)
-
-
-    getNominalResolution(img, realSize)
-    print(f'Answer for figure{i}.txt:')
-    print(getNominalResolution(img, realSize))
+  print(float(object_size)/float(max(all_units_in_line))) if max(all_units_in_line)>0 else print('does not exist') 
