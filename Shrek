@@ -1,0 +1,87 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Dec 16 19:48:44 2020
+
+@author: polin
+"""
+
+import matplotlib.pyplot as plt
+import numpy as np
+import cv2
+
+flimit = 250
+slimit = 255
+
+def drawRectAbove(c, image):
+     rect = cv2.minAreaRect(c) 
+     box = cv2.boxPoints(rect) 
+     box = np.int0(box)
+     cv2.drawContours(image,[box],0,(0,0,255),8)
+     
+def changeAlph(gray):
+    
+    new_gray = cv2.GaussianBlur(gray, (3, 3), 0)
+    edged = cv2.Canny(new_gray, 100, 50)
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+    closed = cv2.morphologyEx(edged, cv2.MORPH_CLOSE, kernel)
+    
+    return closed
+     
+def fupdate(value):
+    global flimit
+    flimit = value
+    
+def subdate(value):
+    global slimit 
+    slimit = value
+
+cam = cv2.VideoCapture(0)
+
+cv2.namedWindow('Camera', cv2.WINDOW_KEEPRATIO)
+cv2.namedWindow('Mask', cv2.WINDOW_KEEPRATIO)
+cv2.namedWindow('Shrek', cv2.WINDOW_KEEPRATIO)
+
+cv2.createTrackbar("F", "Mask", flimit, 255, fupdate)
+cv2.createTrackbar("S", "Mask", flimit, 255, fupdate)
+
+kernel = np.ones((15, 15))
+
+while cam.isOpened():
+    ret, frame = cam.read()
+    converted = cv2.cvtColor(frame, cv2.COLOR_BGR2HLS)
+    mask = cv2.inRange(converted, np.array([20, flimit, 0]), np.array([140, slimit, 150])) 
+
+    mask = cv2.erode(mask, kernel)
+    mask = cv2.dilate(mask, kernel)
+    mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
+    mask = cv2.GaussianBlur(mask, (3, 3), 0)
+    
+    countours = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
+    
+    if len(countours)>0:
+        shrek = max(countours, key=cv2.contourArea)
+        rect = cv2.minAreaRect(shrek)
+        box = cv2.boxPoints(rect)
+        box_x = []
+        box_y = []
+        for p in box:
+            cv2.circle(frame, tuple(p), 6, (0, 0, 255), 2)
+            box_x.append(int(p[0]))
+            box_y.append(int(p[1]))
+            if box_x:
+                shrek_image = frame[min(box_y):max(box_y), min(box_x):max(box_x)]
+
+                if shrek_image.size > 0:
+                     print(shrek)
+                     drawRectAbove(shrek, frame)
+                     cv2.imshow("Shrek", shrek_image)
+    
+    cv2.imshow('Camera', frame)
+    cv2.imshow('Mask', mask)
+    key = cv2.waitKey(1)
+        
+    if key == ord('q'):
+        break
+    
+cam.release()
+cv2.destroyAllWindows()
