@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Dec 18 12:20:07 2020
+
+@author: polin
+"""
+
 import numpy as np
 import matplotlib.pyplot as plt
 
