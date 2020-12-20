@@ -24,7 +24,6 @@ def has_vline(image):
 
 def has_bline(image):
     lines = np.sum(image, 1) // image.shape[1]
-    # print(lines)
     return 1 in lines
 
 def has_bay(image):
