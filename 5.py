@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Dec 01 20:16:38 2020
+
+@author: polin
+"""
+
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.ndimage import morphology
@@ -15,25 +22,72 @@ def has_vline(image):
     lines= np.sum(image,0) // image.shape[0]
     return 1 in lines
 
+def has_bline(image):
+    lines = np.sum(image, 1) // image.shape[1]
+    # print(lines)
+    return 1 in lines
+
 def has_bay(image):
     b=~image
     bb=np.zeros((b.shape[0]+1, b.shape[1])).astype("uint8")
     bb[:-1, :]=b
     return lakes(bb)-1
 
+def count_bays(image):
+    holes = ~image.copy()
+    return np.max(label(holes))
 
 def recognize(image):
     lc=lakes(image)
     if lc == 2:
-        print("B or 8")
+        
+        if count_bays(image) > 4:
+            return '8'
+        else:
+            return 'B'
+    if lc ==1:   
+        
+        bays = count_bays(image)
         if has_vline(image):
-            return "B"
-        return "8"
-    if lc ==1:
-        print("A or 0")
-        if has_bay(image) > 0:
-            return "A"
-        return "0"
+            if bays > 3:
+                return '0'
+            else:
+                if (image.perimeter**2)/image.area < 58:
+                    return 'P'
+                else:
+                    return 'D'
+        else:
+            if bays < 5:
+                return 'A'
+            else:
+                return '0'   
+    if lc == 0:
+
+        bays = count_bays(image)
+        
+        if bays == 2:
+            return '/'
+        
+        if has_vline(image):
+
+            if np.all(image == 1):
+                return '-'
+
+            if bays == 5:
+                return '*'
+            return '1'
+
+        if bays == 5:
+            if has_bline(image):
+                return '*'
+            return 'W'
+
+        if count_bays(image[2:-2, 2:-2]) == 5:
+            return '*'
+        else:
+            return 'X'    
+    
+    
     return None
 
 
@@ -52,6 +106,9 @@ for region in regions:
         d[symbol]=1
     else:
         d[symbol] +=1
+        
+for key in d.keys():
+    d[key] = d[key]/np.max(labeled)        
 print(d)
 
 # print(lakes(regions[1].image))
