@@ -15,8 +15,7 @@ def monitor_part(img):
     cactus = img[y_dino:y_dino+box_height, x_dino:x_dino + box_width]
     
     return cactus
-        
-  
+         
 sreen_tool = mss()   
 x, y = pyautogui.position()
 # print(x,y)
