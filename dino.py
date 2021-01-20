@@ -43,7 +43,5 @@ while x<3270:
         pyautogui.keyUp('space')
         count+=1
         print("jump ", count)
-    
-
-              
+             
     x, y = pyautogui.position()      
